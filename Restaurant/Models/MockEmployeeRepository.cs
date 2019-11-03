@@ -42,5 +42,10 @@ namespace Restaurant.Models
         {
             return this._employeeList.FirstOrDefault(e => e.Id == id);
         }
+
+        public IEnumerable<Employee> GetEmployees()
+        {
+            return _employeeList;
+        }
     }
 }

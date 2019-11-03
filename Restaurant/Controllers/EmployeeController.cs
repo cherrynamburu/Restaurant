@@ -17,16 +17,13 @@ namespace Restaurant.Controllers
             _employeeRepository = employeeRepository;
         }
 
-
-        // ObjectResult looks at the Request Accept Header and if it is set to application/xml, then XML data is returned.
-        // If the Accept header is set to application/json, then JSON data is returned
-        public ObjectResult Get(int id)
+        public ViewResult Index()
         {
-            Employee employee = _employeeRepository.GetEmployee(id);
-            return new ObjectResult(employee);
+            var model = _employeeRepository.GetEmployees();
+            return View(model);
         }
-
-        public IActionResult Details(int id)
+        
+        public ViewResult Details(int id)
         {
             id = id == 0 ? 1 : id;
             EmployeeDetailsViewModel viewModel = new EmployeeDetailsViewModel()
@@ -35,6 +32,14 @@ namespace Restaurant.Controllers
                 PageTitle = "Employee Details"
             };
             return View(viewModel);
+        }
+
+        // ObjectResult looks at the Request Accept Header and if it is set to application/xml, then XML data is returned.
+        // If the Accept header is set to application/json, then JSON data is returned
+        public ObjectResult Get(int id)
+        {
+            Employee employee = _employeeRepository.GetEmployee(id);
+            return new ObjectResult(employee);
         }
 
     }
