@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Models;
+using Restaurant.ViewModel;
 
 namespace Restaurant.Controllers
 {
@@ -27,10 +28,13 @@ namespace Restaurant.Controllers
 
         public IActionResult Details(int id)
         {
-            id = id == 0 ? 1 : id; 
-            Employee employee = _employeeRepository.GetEmployee(id);
-            ViewBag.PageTitle = "Employee Details";
-            return View(employee);
+            id = id == 0 ? 1 : id;
+            EmployeeDetailsViewModel viewModel = new EmployeeDetailsViewModel()
+            {
+                Employee = _employeeRepository.GetEmployee(id),
+                PageTitle = "Employee Details"
+            };
+            return View(viewModel);
         }
 
     }

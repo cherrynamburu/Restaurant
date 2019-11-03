@@ -1,26 +1,26 @@
-﻿@model Restaurant.Models.Employee
+﻿@model Restaurant.ViewModel.EmployeeDetailsViewModel
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>@ViewBag.PageTitle</title>
+    <title>@Model.PageTitle</title>
 </head>
 <body>
     <h1> This is from Views/Employee/Detils.cshtml</h1>
 
     <h2>
-        Id : @Model.Id
+        Id : @Model.Employee.Id
     </h2>
 
     <h2>
-        Name : @Model.Name
+        Name : @Model.Employee.Name
     </h2>
 
     <h2>
-        EmailId : @Model.Email
+        EmailId : @Model.Employee.Email
     </h2>
 
     <h2>
-        Department : @Model.Department
+        Department : @Model.Employee.Department
     </h2>
 </body>
 </html>
