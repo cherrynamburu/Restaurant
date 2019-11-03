@@ -1,26 +1,25 @@
 ﻿@model Restaurant.ViewModel.EmployeeDetailsViewModel
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>@Model.PageTitle</title>
-</head>
-<body>
-    <h1> This is from Views/Employee/Detils.cshtml</h1>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = Model.PageTitle;
+}
 
-    <h2>
-        Id : @Model.Employee.Id
-    </h2>
 
-    <h2>
-        Name : @Model.Employee.Name
-    </h2>
+<h1> This is from Views/Employee/Detils.cshtml</h1>
 
-    <h2>
-        EmailId : @Model.Employee.Email
-    </h2>
+<h2>
+    Id : @Model.Employee.Id
+</h2>
 
-    <h2>
-        Department : @Model.Employee.Department
-    </h2>
-</body>
-</html>
+<h2>
+    Name : @Model.Employee.Name
+</h2>
+
+<h2>
+    EmailId : @Model.Employee.Email
+</h2>
+
+<h2>
+    Department : @Model.Employee.Department
+</h2>
