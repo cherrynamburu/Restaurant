@@ -41,10 +41,14 @@ namespace Restaurant.Controllers
         }
         
         [HttpPost]
-        public RedirectToActionResult Create(Employee employee)
+        public IActionResult Create(Employee employee)
         {
-            employee = _employeeRepository.Create(employee);
-            return RedirectToAction("details", new { id = employee.Id });
+            if (ModelState.IsValid)
+            {
+                employee = _employeeRepository.Create(employee);
+                return RedirectToAction("details", new { id = employee.Id });
+            }
+            return View();
         }
 
         // ObjectResult looks at the Request Accept Header and if it is set to application/xml, then XML data is returned.
