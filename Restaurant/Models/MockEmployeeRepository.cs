@@ -19,25 +19,33 @@ namespace Restaurant.Models
                     Id = 1,
                     Name = "Cherry",
                     Email = "cherry@restaurant.com",
-                    Department = "CSE"
+                    Department = Department.Cooking
                 },
                 new Employee()
                 {
                     Id = 2,
                     Name = "Teju",
                     Email = "teju@restaurant.com",
-                    Department = "CSE"
+                    Department = Department.Accounting
                 },
                 new Employee()
                 {
                     Id = 3,
                     Name = "SaiKrishna",
                     Email = "saikrishna@restaurant.com",
-                    Department = "Mechanical"
+                    Department = Department.Serving
                 }
             };
           
         }
+
+        public Employee Create(Employee employee)
+        {
+            employee.Id = _employeeList.Max(e => e.Id) + 1;
+            _employeeList.Add(employee);
+            return employee;
+        }
+
         public Employee GetEmployee(int id)
         {
             return this._employeeList.FirstOrDefault(e => e.Id == id);

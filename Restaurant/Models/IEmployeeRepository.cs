@@ -11,5 +11,6 @@ namespace Restaurant.Models
     {
         Employee GetEmployee(int Id);
         IEnumerable<Employee> GetEmployees();
+        Employee Create(Employee employee);
     }
 }
