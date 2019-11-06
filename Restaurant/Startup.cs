@@ -36,7 +36,7 @@ namespace Restaurant
             services.AddControllersWithViews();
 
             // Same instance is provided for each http life cycle.
-            services.AddScoped<IEmployeeRepository, MockEmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
