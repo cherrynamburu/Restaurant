@@ -46,6 +46,11 @@ namespace Restaurant.Models
             return employee;
         }
 
+        public Employee Delete(int Id)
+        {
+            throw new NotImplementedException();
+        }
+
         public Employee GetEmployee(int id)
         {
             return this._employeeList.FirstOrDefault(e => e.Id == id);
@@ -54,6 +59,11 @@ namespace Restaurant.Models
         public IEnumerable<Employee> GetEmployees()
         {
             return _employeeList;
+        }
+
+        public Employee Update(Employee employeeChanges)
+        {
+            throw new NotImplementedException();
         }
     }
 }
