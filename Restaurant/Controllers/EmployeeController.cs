@@ -129,6 +129,23 @@ namespace Restaurant.Controllers
             return uniqueFileName;
         }
 
+        public IActionResult Delete(int id)
+        {
+            Employee employee = _employeeRepository.GetEmployee(id);
+            if (employee == null)
+            {
+                Response.StatusCode = 404;
+                return View("EmployeeNotFound", id);
+            }
+            if (employee.PhotoPath != null)
+            {
+                string filePath = Path.Combine(_hostingEnvironment.WebRootPath, "images", employee.PhotoPath);
+                System.IO.File.Delete(filePath);
+            }
+            _employeeRepository.Delete(id);
+            return RedirectToAction("Index");
+        }
+
 
         // ObjectResult looks at the Request Accept Header and if it is set to application/xml, then XML data is returned.
         // If the Accept header is set to application/json, then JSON data is returned
