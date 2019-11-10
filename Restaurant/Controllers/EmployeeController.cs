@@ -30,7 +30,13 @@ namespace Restaurant.Controllers
         
         public ViewResult Details(int id)
         {
-            id = id == 0 ? 1 : id;
+            Employee employee = _employeeRepository.GetEmployee(id);
+            if (employee == null)
+            {
+                Response.StatusCode = 404;
+                return View("EmployeeNotFoundError", id);
+            }
+            
             EmployeeDetailsViewModel viewModel = new EmployeeDetailsViewModel()
             {
                 Employee = _employeeRepository.GetEmployee(id),

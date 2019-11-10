@@ -51,6 +51,10 @@ namespace Restaurant
                 };
                 app.UseDeveloperExceptionPage(options);
             }
+            else
+            {
+                app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            }
 
             app.UseStaticFiles();
                   
@@ -64,7 +68,7 @@ namespace Restaurant
 
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync("Oops..Restaurant is closed right now, Visit after Sometime!");
+                    await context.Response.WriteAsync("<h1>Oops..! HomePage is under Construction. Go to <a href='/Employee/Index/'>EmployeeList<a/><h1>");
                 });
             });
         }
