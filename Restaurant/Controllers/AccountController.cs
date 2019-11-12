@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.ViewModel;
@@ -56,13 +57,15 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ViewResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -70,9 +73,13 @@ namespace Restaurant.Controllers
                 
                 if (result.Succeeded)
                 {
+                    if (!string.IsNullOrEmpty(returnUrl) && (Url.IsLocalUrl(returnUrl)))
+                    {
+                        return LocalRedirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Employee");
                 }
-
+                
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }   
             return View(model);
