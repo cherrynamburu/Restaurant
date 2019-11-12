@@ -54,5 +54,28 @@ namespace Restaurant.Controllers
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Employee");
         }
+
+        [HttpGet]
+        public ViewResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+                
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("Index", "Employee");
+                }
+
+                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+            }   
+            return View(model);
+        }
     }
 }
