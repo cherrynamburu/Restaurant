@@ -13,7 +13,7 @@ namespace Restaurant.ViewModel
         [Required]
         [EmailAddress]
         [Remote(action: "IsEmailInUse", controller: "Account")]
-        [ValidEmailDomain(allowedDomain:"@restaurant.com", 
+        [ValidEmailDomain(allowedDomain:"restaurant.com", 
             ErrorMessage = "Domain must be restaurant.com")]
         public string Email { get; set; }
 
@@ -26,6 +26,8 @@ namespace Restaurant.ViewModel
         [Display(Name ="Confirm Password")]
         [Compare("Password", ErrorMessage ="Password and Confirmation Password does not match")]
         public string ConfirmPassword { get; set; }
+
+        public string City { get; set; }
 
     }
 }
