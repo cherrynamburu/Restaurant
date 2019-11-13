@@ -22,12 +22,14 @@ namespace Restaurant.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
         public ViewResult Register()
         {
             return View();
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
@@ -48,6 +50,21 @@ namespace Restaurant.Controllers
             }
            return View(model);
         }
+
+        [AcceptVerbs("Get", "Post")]
+        [AllowAnonymous]
+        public async Task<IActionResult> IsEmailInUse(string email)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+
+            if (user == null)
+            {
+                return Json(true);
+            }
+
+            return Json($"Email {email} is already in use.");
+        }
+        
 
         [HttpPost]
         public async Task<IActionResult> Logout()
