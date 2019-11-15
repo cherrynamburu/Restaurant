@@ -37,7 +37,7 @@ namespace Restaurant.Controllers
                 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Employee");
+                    return RedirectToAction("ListRoles");
                 }
 
                 foreach ( IdentityError error in result.Errors)
@@ -47,6 +47,13 @@ namespace Restaurant.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ListRoles()
+        {
+            IQueryable<IdentityRole> roles = roleManager.Roles;
+            return View(roles);
         }
     }
 }
