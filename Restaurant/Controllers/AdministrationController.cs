@@ -183,5 +183,14 @@ namespace Restaurant.Controllers
             }
             return RedirectToAction("EditRole", new { Id = roleId});
         }
+
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            IQueryable<ApplicationUser> model = userManager.Users;
+
+            return View(model);
+        }
+
     }
 }
