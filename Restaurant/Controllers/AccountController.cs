@@ -45,8 +45,24 @@ namespace Restaurant.Controllers
 
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, isPersistent: false);
+                    if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction("ListRoles", "Administration");
+                    }
+                    result = await userManager.AddToRoleAsync(user, "Manager");
+                    if (result.Succeeded)
+                    {
                     return RedirectToAction("Index", "Employee");
+                    }
+                    else
+                    {
+                        ViewBag.ErrorMessage = $"Error Occured while adding {user.UserName} to role <b>Manager</b>";
+                        return View("NotFoundError");
+                    }
+
+                    //To Login User after registering
+                    //await signInManager.SignInAsync(user, isPersistent: false);
+                    //return RedirectToAction("Index", "Employee");
                 }
 
                 foreach (var error in result.Errors)
@@ -106,6 +122,13 @@ namespace Restaurant.Controllers
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }   
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }
