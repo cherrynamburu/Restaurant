@@ -23,14 +23,14 @@ namespace Restaurant.Controllers
 
 
         [HttpGet]
-        [AllowAnonymous]
+        [Authorize(Roles = "BranchManager, Admin")]
         public ViewResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "BranchManager, Admin")]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (ModelState.IsValid)
