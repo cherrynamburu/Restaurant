@@ -30,6 +30,12 @@
                     </div>
                 </li>
             }
+            else if (SignInManager.IsSignedIn(User) && User.IsInRole("BranchManager"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Administration" asp-action="ListUsers">List Users</a>
+                </li>
+            }
         </ul>
         <ul class="navbar-nav ml-auto">
             

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   
     public class AdministrationController : Controller
     {
         private readonly RoleManager<IdentityRole> roleManager;
@@ -23,12 +23,14 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ViewResult CreateRole()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel model)
         {
             if (ModelState.IsValid)
@@ -55,6 +57,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult ListRoles()
         {
             IQueryable<IdentityRole> roles = roleManager.Roles;
@@ -62,6 +65,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id);
@@ -90,6 +94,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditRole(EditRoleViewModel model)
         {
             var role = await roleManager.FindByIdAsync(model.Id);
@@ -116,6 +121,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUsersInRole(string roleId)
         {
             var role = await roleManager.FindByIdAsync(roleId);
@@ -146,6 +152,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditUsersInRole(List<UsersInRoleViewModel> model, string roleId)
         {
             var role = await roleManager.FindByIdAsync(roleId);
@@ -185,6 +192,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "BranchManager")]
         public IActionResult ListUsers()
         {
             IQueryable<ApplicationUser> model = userManager.Users;
@@ -192,5 +200,63 @@ namespace Restaurant.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        [Authorize(Roles = "BranchManager")]
+        public async Task<ViewResult> EditUser(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {id} Not found";
+                return View("NotFoundError");
+            }
+
+            var userRoles = await userManager.GetRolesAsync(user);
+
+            var model = new EditUserViewModel
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                City = user.City
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "BranchManager")]
+        public async Task<IActionResult> EditUser(EditUserViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {model.Id} cannot be found";
+                return View("NotFoundError");
+            }
+            else
+            {
+                user.Email = model.Email;
+                user.UserName = model.UserName;
+                user.City = model.City;
+
+                var result = await userManager.UpdateAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListUsers");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty ,error.Description);
+                }
+                return View(model);
+            }
+
+
+        }
     }
 }
