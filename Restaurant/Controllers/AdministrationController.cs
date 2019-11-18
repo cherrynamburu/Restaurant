@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Restaurant.Filters.ActionFilters;
 using Restaurant.Models;
 using Restaurant.ViewModel;
 using System;
@@ -192,7 +193,8 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "BranchManager")]
+        [Authorize(Roles = "Admin, BranchManager")]
+        [ImportModelState]
         public IActionResult ListUsers()
         {
             IQueryable<ApplicationUser> model = userManager.Users;
@@ -201,7 +203,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "BranchManager")]
+        [Authorize(Roles = "Admin, BranchManager")]
         public async Task<ViewResult> EditUser(string id)
         {
             var user = await userManager.FindByIdAsync(id);
@@ -226,7 +228,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "BranchManager")]
+        [Authorize(Roles = "Admin, BranchManager")]
         public async Task<IActionResult> EditUser(EditUserViewModel model)
         {
             var user = await userManager.FindByIdAsync(model.Id);
@@ -257,6 +259,47 @@ namespace Restaurant.Controllers
             }
 
 
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, BranchManager")]
+        [ExportModelState]
+        public async Task<IActionResult> DeleteUser(string id)
+        {
+            var flag = true;
+
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"The User with Id = {id} cannot be found";
+                return View("NotFoundError");
+            }
+
+            if (User.IsInRole("BranchManager"))
+            {
+                if (await userManager.IsInRoleAsync(user, "BranchManager") || await userManager.IsInRoleAsync(user, "Admin"))
+                {
+                    flag = false;
+                    ModelState.AddModelError(string.Empty, "Branch Manager Can only manage Managers");
+                }
+            }
+
+            if (flag)
+            {
+                var result = await userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListUsers");
+                }
+            
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+            return RedirectToAction("ListUsers");
         }
     }
 }

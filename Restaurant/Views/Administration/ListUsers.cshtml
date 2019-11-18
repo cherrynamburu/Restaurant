@@ -12,9 +12,10 @@
        class="btn btn-primary mb-3" style="width:auto">
         Add new user
     </a>
-
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     foreach (var user in Model)
     {
+
         <div class="card mb-3">
             <div class="card-header">
                 User Id : @user.Id
@@ -23,8 +24,10 @@
                 <h5 class="card-title">@user.UserName</h5>
             </div>
             <div class="card-footer">
-                <a asp-controller="Administration" asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
+                <form asp-action="DeleteUser" asp-route-Id="@user.Id" method="post">
+                    <a asp-controller="Administration" asp-action="EditUser" asp-route-id="@user.Id" class="btn btn-primary">Edit</a>
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
             </div>
         </div>
     }

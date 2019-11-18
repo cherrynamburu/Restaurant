@@ -52,7 +52,7 @@ namespace Restaurant.Controllers
                     result = await userManager.AddToRoleAsync(user, "Manager");
                     if (result.Succeeded)
                     {
-                    return RedirectToAction("Index", "Employee");
+                    return RedirectToAction("ListUsers", "Administration");
                     }
                     else
                     {
