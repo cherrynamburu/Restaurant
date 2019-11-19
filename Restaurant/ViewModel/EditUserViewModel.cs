@@ -21,5 +21,7 @@ namespace Restaurant.ViewModel
 
         public string City { get; set; }
 
+        public IList<string> Roles { get; set; }
+
     }
 }
