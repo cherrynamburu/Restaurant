@@ -59,6 +59,7 @@ namespace Restaurant.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
+        [ImportModelState]
         public IActionResult ListRoles()
         {
             IQueryable<IdentityRole> roles = roleManager.Roles;
@@ -190,6 +191,38 @@ namespace Restaurant.Controllers
                 }
             }
             return RedirectToAction("EditRole", new { Id = roleId});
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [ExportModelState]
+        public async Task<IActionResult> DeleteRole(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+
+            if (role == null)
+            {
+                ViewBag.ErrorMessage = $"Role with Id = {id} cannot be found";
+                return View("NotFound");
+            }
+            else
+            {
+                var result = await roleManager.DeleteAsync(role);
+
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ListRoles");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+
+                return RedirectToAction("ListRoles");
+            }
+            return RedirectToAction("ListRoles");
         }
 
         [HttpGet]
