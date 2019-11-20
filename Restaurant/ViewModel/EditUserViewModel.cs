@@ -10,6 +10,12 @@ namespace Restaurant.ViewModel
 {
     public class EditUserViewModel
     {
+        public EditUserViewModel()
+        {
+            Roles = new List<string>();
+            Claims = new List<string>();
+        }
+
         public string Id { get; set; }
         
         [Required]
@@ -22,6 +28,8 @@ namespace Restaurant.ViewModel
         public string City { get; set; }
 
         public IList<string> Roles { get; set; }
+
+        public IList<string> Claims { get; set; }
 
     }
 }

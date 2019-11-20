@@ -7,6 +7,7 @@ using Restaurant.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Restaurant.Controllers
@@ -222,7 +223,6 @@ namespace Restaurant.Controllers
 
                 return RedirectToAction("ListRoles");
             }
-            return RedirectToAction("ListRoles");
         }
 
         [HttpGet]
@@ -248,6 +248,7 @@ namespace Restaurant.Controllers
             }
 
             var userRoles = await userManager.GetRolesAsync(user);
+            var userClaims = await userManager.GetClaimsAsync(user);
 
             var model = new EditUserViewModel
             {
@@ -255,7 +256,8 @@ namespace Restaurant.Controllers
                 Email = user.Email,
                 UserName = user.UserName,
                 City = user.City,
-                Roles = userRoles
+                Roles = userRoles,
+                Claims = userClaims.Select(c => c.Value).ToList()
             };
 
             return View(model);
@@ -400,5 +402,66 @@ namespace Restaurant.Controllers
             return RedirectToAction("EditUser", new { Id = userId });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> ManageUserClaims(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+                return View("NotFoundError");
+            }
+
+            var existingUserClaims = await userManager.GetClaimsAsync(user);
+
+            var model = new UserClaimsViewModel
+            {
+                UserId = userId
+            };
+
+            foreach (Claim claim in ClaimsStore.AllClaims)
+            {
+                UserClaim userClaim = new UserClaim
+                {
+                    ClaimType = claim.Type,
+                    IsSelected = existingUserClaims.Any(c => c.Type == claim.Type) ? true : false
+                };
+
+                model.Claims.Add(userClaim);
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles="Admin")]
+        public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel model)
+        {
+            var user = await userManager.FindByIdAsync(model.UserId);
+
+            if (user == null)
+            {
+                ViewBag.ErrorMessage = $"The User with Id = {model.UserId} cannot be found";
+                return View("NotFoundError");
+            }
+
+            var claims = await userManager.GetClaimsAsync(user);
+            var result = await userManager.RemoveClaimsAsync(user, claims);
+
+            if (result.Succeeded)
+            {
+                var addClaimResult = await userManager.AddClaimsAsync(user, model.Claims.Where(
+                    c => c.IsSelected).Select(c => new Claim(c.ClaimType, c.ClaimType)));
+
+                if (addClaimResult.Succeeded)
+                {
+                    return RedirectToAction("EditUser", new { id = model.UserId});
+                }
+
+            }
+            ViewBag.ErrorMessage = $" Error Occured While Modiying User Claims for the user with Id = {model.UserId}";
+            return View("NotFoundError");
+        }
     }
 }
