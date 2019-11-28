@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Restaurant.Models;
@@ -135,6 +136,7 @@ namespace Restaurant.Controllers
             return uniqueFileName;
         }
 
+        //[Authorize(Policy = "DeleteEmployeePolicy")]
         public IActionResult Delete(int id)
         {
             Employee employee = _employeeRepository.GetEmployee(id);

@@ -53,6 +53,11 @@ namespace Restaurant
                 config.Filters.Add(new AuthorizeFilter(policy));
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("DeleteEmployeePolicy",
+                        policy => policy.RequireClaim("Delete Employee"));
+            });
             // Same instance is provided for each http life cycle.
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
         }

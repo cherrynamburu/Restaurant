@@ -403,6 +403,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin, BranchManager")]
         public async Task<IActionResult> ManageUserClaims(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -435,7 +436,7 @@ namespace Restaurant.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles="Admin, BranchManager")]
         public async Task<IActionResult> ManageUserClaims(UserClaimsViewModel model)
         {
             var user = await userManager.FindByIdAsync(model.UserId);
